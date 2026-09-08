@@ -19,7 +19,7 @@ void Game::Reset()
 	ball.color = ConsoleColor::Cyan;
 	ResetBall();
 
-	// TODO #2 - Add this brick and 4 more bricks to the vector
+	// TODO #2 - Add this brick and 4 more bricks to the vector 
 	bricks.clear();
 
 	for (int i = 0; i < 5; i++)
@@ -72,7 +72,7 @@ void Game::Render() const
 {
 	Console::Lock(true);
 	Console::Clear();
-	
+
 	paddle.Draw();
 	ball.Draw();
 
@@ -82,7 +82,18 @@ void Game::Render() const
 		bricks[i].Draw();
 	}
 
-	Console::Lock(false);
+	if (bricks.empty())
+	{
+		Console::WordWrap(20, 15, 40,
+			"You win! Press 'R' to play again.");
+	}
+	else if (ball.y_position + ball.y_velocity >= WINDOW_HEIGHT)
+	{
+		Console::WordWrap(20, 15, 40,
+			"You lose! Press 'R' to play again.");
+	}
+	    Console::Lock(false);
+
 }
 
 void Game::CheckCollision()
@@ -110,6 +121,10 @@ void Game::CheckCollision()
 	}
 
 	// TODO #6 - If no bricks remain, pause ball and display (render) victory text with R to reset
+	if (bricks.empty())
+	{
+		ball.moving = false;
+	}
 
 
 	if (paddle.Contains(ball.x_position + ball.x_velocity, ball.y_velocity + ball.y_position))
@@ -118,4 +133,8 @@ void Game::CheckCollision()
 	}
 
 	// TODO #7 - If ball touches bottom of window, pause ball and display (render) defeat text with R to reset
+	if (ball.y_position + ball.y_velocity >= WINDOW_HEIGHT)
+	{
+		ball.moving = false;
+	}
 }
